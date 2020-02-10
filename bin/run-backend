@@ -1,0 +1,9 @@
+#!/bin/bash
+
+CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+source ${CURRENT_DIR}/helpers
+
+pushd ${CURRENT_DIR}/../selene-backend
+export DB_PASSWORD=$(cat ${MYCROFT_CREDENTIALS_DIR}/selene_postgres_password)
+export POSTGRES_PASSWORD=$(cat ${MYCROFT_CREDENTIALS_DIR}/postgres_password)
+docker-compose up

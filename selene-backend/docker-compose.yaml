@@ -4,14 +4,34 @@ services:
     image: postgres:12.1
     restart: always
     environment:
-      POSTGRES_PASSWORD_FILE: /credentials/postgres_password
+      POSTGRES_PASSWORD_FILE: /docker-entrypoint-initdb.d/postgres_password
     volumes:
-    - generated_credentials:/credentials
-
+    - generated:/docker-entrypoint-initdb.d
+    command:
+      - -c
+      - "listen_addresses=*"
+  db_setup:
+    image: selene-backend
+    restart: "on-failure"
+    depends_on:
+      - db
+    links:
+      - db
+    command:
+      - bash
+      - -cxe
+      - "set -e && sleep 2 && cd /opt/selene/selene-backend/db/scripts && pipenv run python bootstrap_mycroft_db.py"
+      # TODO: Get rid of the sleep above. Open a PR to make the bootstrap script to retry if it fails to connect
+      # The postgres image restart itself after running init scripts and this script looses the connection
+      # and can't recover.
+    environment:
+      DB_PASSWORD: "${DB_PASSWORD}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      DB_HOST: "db"
 volumes:
-  generated_credentials:
+  generated:
     driver: local
     driver_opts:
       type: none
-      device: "${PWD}/generated_credentials"
+      device: "${PWD}/generated"
       o: bind

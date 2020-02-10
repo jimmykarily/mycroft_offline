@@ -1,0 +1,9 @@
+#!/bin/bash
+
+CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+source ${CURRENT_DIR}/helpers
+
+pushd ${CURRENT_DIR}/../selene-backend
+docker-compose stop
+docker-compose rm -v -f
+docker volume rm -f selene-backend_generated

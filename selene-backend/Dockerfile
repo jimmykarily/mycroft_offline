@@ -19,3 +19,9 @@ RUN wget http://download.geonames.org/export/dump/countryInfo.txt
 RUN wget http://download.geonames.org/export/dump/timeZones.txt
 RUN wget http://download.geonames.org/export/dump/admin1CodesASCII.txt
 RUN wget http://download.geonames.org/export/dump/cities500.zip
+
+# https://github.com/MycroftAI/selene-backend/issues/201
+RUN mkdir -p /opt/selene/documentation/_pages && \
+  cd /opt/selene/documentation/_pages && \
+  touch embed-privacy-policy.md && \
+  touch embed-terms-of-use.md
