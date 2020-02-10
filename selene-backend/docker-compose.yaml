@@ -53,15 +53,43 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
       DB_PORT: 5432
       DB_USER: selene
-      GITHUB_CLIENT_ID: <github client id>
-      GITHUB_CLIENT_SECRET: <github client secret>
+      GITHUB_CLIENT_ID: <github client id> TODO
+      GITHUB_CLIENT_SECRET: <github client secret> TODO
       JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
       JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
       JWT_RESET_SECRET: "${JWT_RESET_SECRET}"
       SALT: "${ENCRYPTION_SALT}"
       SELENE_ENVIRONMENT: prod
-      SENDGRID_API_KEY: <sendgrid API key>
+      SENDGRID_API_KEY: <sendgrid API key> TODO
       SSO_BASE_URL: "${SSO_BASE_URL}"
+  account:
+    image: selene-backend
+    restart: "on-failure"
+    volumes:
+    - shared:/shared
+    links:
+      - db
+      - redis
+    command:
+      - bash
+      - -c
+      - "if [ ! -f /shared/db_bootstrap_done ]; then echo 'Database bootstraping not done. Exiting.'; exit 1; fi;
+         cd /opt/selene/selene-backend/api/account && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+        "
+    environment:
+      DB_HOST: db
+      DB_NAME: mycroft
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_PORT: 5432
+      DB_USER: selene
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
+      SALT: "${ENCRYPTION_SALT}"
+      SELENE_ENVIRONMENT: prod
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OAUTH_BASE_URL: "${OAUTH_BASE_URL}"
+
 volumes:
   generated:
     driver: local
