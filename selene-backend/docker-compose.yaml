@@ -7,6 +7,7 @@ services:
       POSTGRES_PASSWORD_FILE: /docker-entrypoint-initdb.d/postgres_password
     volumes:
     - generated:/docker-entrypoint-initdb.d
+    - shared:/shared
     command:
       - -c
       - "listen_addresses=*"
@@ -17,10 +18,12 @@ services:
       - db
     links:
       - db
+    volumes:
+    - shared:/shared
     command:
       - bash
       - -c
-      - "set -xe && sleep 2 && cd /opt/selene/selene-backend/db/scripts && pipenv run python -u bootstrap_mycroft_db.py"
+      - "set -xe && sleep 10 && cd /opt/selene/selene-backend/db/scripts && pipenv run python -u bootstrap_mycroft_db.py && touch /shared/db_bootstrap_done"
       # TODO: Get rid of the sleep above. Open a PR to make the bootstrap script to retry if it fails to connect
       # The postgres image restart itself after running init scripts and this script looses the connection
       # and can't recover.
@@ -28,6 +31,37 @@ services:
       DB_PASSWORD: "${DB_PASSWORD}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       DB_HOST: "db"
+  redis:
+    image: redis:5.0.7
+    restart: always
+  sso:
+    image: selene-backend
+    restart: "on-failure"
+    volumes:
+    - shared:/shared
+    links:
+      - db
+    command:
+      - bash
+      - -c
+      - "if [ ! -f /shared/db_bootstrap_done ]; then echo 'Database bootstraping not done. Exiting.'; exit 1; fi;
+         cd /opt/selene/selene-backend/api/sso && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+        "
+    environment:
+      DB_HOST: db
+      DB_NAME: mycroft
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_PORT: 5432
+      DB_USER: selene
+      GITHUB_CLIENT_ID: <github client id>
+      GITHUB_CLIENT_SECRET: <github client secret>
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
+      JWT_RESET_SECRET: "${JWT_RESET_SECRET}"
+      SALT: "${ENCRYPTION_SALT}"
+      SELENE_ENVIRONMENT: prod
+      SENDGRID_API_KEY: <sendgrid API key>
+      SSO_BASE_URL: "${SSO_BASE_URL}"
 volumes:
   generated:
     driver: local
@@ -35,3 +69,4 @@ volumes:
       type: none
       device: "${PWD}/generated"
       o: bind
+  shared:

@@ -7,3 +7,4 @@ pushd ${CURRENT_DIR}/../selene-backend
 docker-compose stop
 docker-compose rm -v -f
 docker volume rm -f selene-backend_generated
+docker volume rm -f selene-backend_shared

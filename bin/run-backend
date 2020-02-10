@@ -3,7 +3,16 @@
 CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 source ${CURRENT_DIR}/helpers
 
+if [ -z "$SSO_BASE_URL" ]; then
+  log_error "SSO_BASE_URL environment variable is not set!";
+  exit 1;
+fi
+
 pushd ${CURRENT_DIR}/../selene-backend
 export DB_PASSWORD=$(cat ${MYCROFT_CREDENTIALS_DIR}/selene_postgres_password)
 export POSTGRES_PASSWORD=$(cat ${MYCROFT_CREDENTIALS_DIR}/postgres_password)
+export JWT_ACCESS_SECRET=$(cat ${MYCROFT_CREDENTIALS_DIR}/jwt_access_secret)
+export JWT_REFRESH_SECRET=$(cat ${MYCROFT_CREDENTIALS_DIR}/jwt_refresh_secret)
+export JWT_RESET_SECRET=$(cat ${MYCROFT_CREDENTIALS_DIR}/jwt_reset_secret)
+export ENCRYPTION_SALT=$(cat ${MYCROFT_CREDENTIALS_DIR}/encyption_salt)
 docker-compose up
