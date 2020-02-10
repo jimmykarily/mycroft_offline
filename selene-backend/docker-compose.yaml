@@ -19,8 +19,8 @@ services:
       - db
     command:
       - bash
-      - -cxe
-      - "set -e && sleep 2 && cd /opt/selene/selene-backend/db/scripts && pipenv run python bootstrap_mycroft_db.py"
+      - -c
+      - "set -xe && sleep 2 && cd /opt/selene/selene-backend/db/scripts && pipenv run python -u bootstrap_mycroft_db.py"
       # TODO: Get rid of the sleep above. Open a PR to make the bootstrap script to retry if it fails to connect
       # The postgres image restart itself after running init scripts and this script looses the connection
       # and can't recover.
