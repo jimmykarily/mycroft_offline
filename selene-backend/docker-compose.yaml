@@ -1,0 +1,17 @@
+version: '3'
+services:
+  db:
+    image: postgres:12.1
+    restart: always
+    environment:
+      POSTGRES_PASSWORD_FILE: /credentials/postgres_password
+    volumes:
+    - generated_credentials:/credentials
+
+volumes:
+  generated_credentials:
+    driver: local
+    driver_opts:
+      type: none
+      device: "${PWD}/generated_credentials"
+      o: bind

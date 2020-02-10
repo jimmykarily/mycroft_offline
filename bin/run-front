@@ -1,0 +1,15 @@
+#!/bin/bash
+
+CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+source ${CURRENT_DIR}/helpers
+
+mkdir -p ${MYCROFT_STORAGE_DIR}
+
+docker run -d \
+-v ${MYCROFT_STORAGE_DIR}:/root/.mycroft \
+--device /dev/snd \
+-e PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native \
+-v ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native \
+-v ~/.config/pulse/cookie:/root/.config/pulse/cookie \
+-p 8181:8181 \
+--name mycroft mycroftai/docker-mycroft

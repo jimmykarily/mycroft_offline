@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Setting and constant definitions
+export BIN_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+export MYCROFT_STORAGE_DIR=$(readlink -f ${BIN_DIR}/../storage)
+export MYCROFT_CREDENTIALS_DIR=$(readlink -f ${BIN_DIR}/../selene-backend/generated_credentials)
+
+log() {
+  date=$(date +"%Y-%m-%d %H:%M:%S")
+
+  case $1 in
+    "warn")
+      shift
+      echo -e "\e[93m[${date}][WARNING] " ${@} "\e[0m"
+      ;;
+    "error")
+      shift
+      echo -e "\e[31m[${date}][ERROR] " ${@} "\e[0m"
+      ;;
+    *)
+      shift
+      echo -e "[${date}] " ${@}
+      ;;
+  esac
+}
+
+log_debug() {
+  log "debug" $@
+}
+
+log_info() {
+  log "info" $@
+}
+
+log_warn() {
+  log "warn" $@
+}
+
+log_error() {
+  log "error" $@
+}
+
+# Usage: generate_password_file dir filename bytes
+# Will not regenerate a file if it's already there
+generate_password_file() {
+  mkdir -p $1
+  if [ -f ${1}/${2} ]; then
+    log_warn "File ${1}/${2} already exists. Skipping generation."
+  fi
+  echo $(</dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${3:-32}) > ${1}/${2}
+}
