@@ -36,6 +36,30 @@ parseconf() {
     log_error "github_password not set! Check your mycroft.yaml file.";
     exit 1;
   fi
+
+  export EMAIL_SERVICE_HOST=$(yq r mycroft.yaml email_service_host)
+  if [ -z "$EMAIL_SERVICE_HOST" ]; then
+    log_error "email_service_host not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
+  export EMAIL_SERVICE_PORT=$(yq r mycroft.yaml email_service_port)
+  if [ -z "$EMAIL_SERVICE_PORT" ]; then
+    log_error "email_service_port not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
+  export EMAIL_SERVICE_USER=$(yq r mycroft.yaml email_service_user)
+  if [ -z "$EMAIL_SERVICE_USER" ]; then
+    log_error "email_service_user not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
+  export EMAIL_SERVICE_PASSWORD=$(yq r mycroft.yaml email_service_password)
+  if [ -z "$EMAIL_SERVICE_PASSWORD" ]; then
+    log_error "email_service_password not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
 }
 
 log() {

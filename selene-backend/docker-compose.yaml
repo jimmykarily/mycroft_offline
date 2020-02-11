@@ -139,11 +139,85 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       OAUTH_BASE_URL: "${OAUTH_BASE_URL}"
+  devices:
+    image: selene-backend
+    restart: "on-failure"
+    volumes:
+    - shared:/shared
+    links:
+      - db
+      - redis
+    command:
+      - bash
+      - -c
+      - "if [ ! -f /shared/skills_setup_done ]; then echo 'Skills downloading and setup not done. Exiting.'; exit 1; fi;
+         cd /opt/selene/selene-backend/api/public && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+        "
+    environment:
+      DB_HOST: db
+      DB_NAME: mycroft
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_PORT: 5432
+      DB_USER: selene
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
+      SALT: "${ENCRYPTION_SALT}"
+      SELENE_ENVIRONMENT: prod
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OAUTH_BASE_URL: "${OAUTH_BASE_URL}"
+      SELENE_ENVIRONMENT: prod
+      SALT: "${ENCRYPTION_SALT}"
+      EMAIL_SERVICE_HOST: "${EMAIL_SERVICE_HOST}"
+      EMAIL_SERVICE_PORT: "${EMAIL_SERVICE_PORT}"
+      EMAIL_SERVICE_USER: "${EMAIL_SERVICE_USER}"
+      EMAIL_SERVICE_PASSWORD: "${EMAIL_SERVICE_PASSWORD}"
+      GOOGLE_STT_KEY: "${GOOGLE_STT_KEY}" # NOTE: Optional if you plan to use Google for STT
+      OWM_KEY: "${OWM_KEY}"
+      OWM_URL: "https://api.openweathermap.org/data/2.5"
+      WOLFRAM_ALPHA_KEY: "${WOLFRAM_ALPHA_KEY}"
+      WOLFRAM_ALPHA_URL: "https://api.wolframalpha.com"
+  deepspeech:
+    image: deepspeech
+    restart: "on-failure"
+    expose:
+      - "8080"
+  mycroft:
+    image: mycroftai/docker-mycroft
+    restart: "on-failure"
+    volumes:
+      - mycroft_storage_dir:/root/.mycroft
+      - pulse_runtime:${XDG_RUNTIME_DIR}/pulse/
+      - pulse_config:/root/.config/pulse/
+    environment:
+      PULSE_SERVER: "unix:${XDG_RUNTIME_DIR}/pulse/native"
+    ports:
+      - "8181:8181"
+    devices:
+      - "/dev/snd:/dev/snd"
 volumes:
   generated:
     driver: local
     driver_opts:
       type: none
       device: "${PWD}/generated"
+      o: bind
+  mycroft_storage_dir:
+    driver: local
+    driver_opts:
+      type: none
+      device: "${MYCROFT_STORAGE_DIR}"
+      o: bind
+  pulse_runtime:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${XDG_RUNTIME_DIR}/pulse/
+      o: bind
+  pulse_config:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${HOME}/.config/pulse/
       o: bind
   shared:
