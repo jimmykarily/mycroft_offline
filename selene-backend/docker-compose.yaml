@@ -89,7 +89,56 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       OAUTH_BASE_URL: "${OAUTH_BASE_URL}"
-
+  skills_setup:
+    image: selene-backend
+    restart: "on-failure"
+    volumes:
+    - shared:/shared
+    links:
+      - db
+      - redis
+    command:
+      - bash
+      - -c
+      - "if [ ! -f /shared/db_bootstrap_done ]; then echo 'Database bootstraping not done. Exiting.'; exit 1; fi;
+         cd /opt/selene/selene-backend/batch && /usr/local/bin/pipenv install &&  pipenv run python script/load_skill_display_data.py --core-version 19.08 && touch /shared/skills_setup_done
+        "
+        # TODO: core-version shouldn't be hardcoded (get latest somehow?)
+    environment:
+      DB_HOST: db
+      DB_NAME: mycroft
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_PORT: 5432
+      DB_USER: selene
+      GITHUB_USER: "${GITHUB_USER}"
+      GITHUB_PASSWORD: "${GITHUB_PASSWORD}"
+  markeplace:
+    image: selene-backend
+    restart: "on-failure"
+    volumes:
+    - shared:/shared
+    links:
+      - db
+      - redis
+    command:
+      - bash
+      - -c
+      - "if [ ! -f /shared/skills_setup_done ]; then echo 'Skills downloading and setup not done. Exiting.'; exit 1; fi;
+         cd /opt/selene/selene-backend/api/market && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+        "
+    environment:
+      DB_HOST: db
+      DB_NAME: mycroft
+      DB_PASSWORD: "${DB_PASSWORD}"
+      DB_PORT: 5432
+      DB_USER: selene
+      JWT_ACCESS_SECRET: "${JWT_ACCESS_SECRET}"
+      JWT_REFRESH_SECRET: "${JWT_REFRESH_SECRET}"
+      SALT: "${ENCRYPTION_SALT}"
+      SELENE_ENVIRONMENT: prod
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      OAUTH_BASE_URL: "${OAUTH_BASE_URL}"
 volumes:
   generated:
     driver: local
