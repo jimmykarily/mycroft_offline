@@ -2,16 +2,7 @@
 
 CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 source ${CURRENT_DIR}/helpers
-
-if [ -z "$SSO_BASE_URL" ]; then
-  log_error "SSO_BASE_URL environment variable is not set!";
-  exit 1;
-fi
-
-if [ -z "$OAUTH_BASE_URL" ]; then
-  log_error "OAUTH_BASE_URL environment variable is not set!";
-  exit 1;
-fi
+parseconf
 
 pushd ${CURRENT_DIR}/../selene-backend
 export DB_PASSWORD=$(cat ${MYCROFT_CREDENTIALS_DIR}/selene_postgres_password)

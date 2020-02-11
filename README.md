@@ -10,6 +10,13 @@ There are various home assistant solutions out there but all of them transfer yo
 
 The project that is closer to the desired result is Mycroft (https://mycroft.ai/). It is very easy to run the client side components using one docker command but their backend is running remotely. All the tools they use though are open source so it only needs one to do the work and package them in a nice little docker-compose file (https://mycroft-ai.gitbook.io/docs/about-mycroft-ai/faq#can-mycroft-run-completely-offline-can-i-self-host-everything).
 
+## Prerequisites
+
+- yq tool: https://github.com/mikefarah/yq/releases (to parse yaml configuration)
+- docker: https://www.docker.com/get-started
+- docker-compose: https://docs.docker.com/compose/
+- Internet connection to download docker images and dependencies
+
 ## Deploy
 
 ### Settings
@@ -28,6 +35,7 @@ Idea: Create a mycroft skill to deploy apps with CF (cf cli wrapper)
 - https://mycroft.ai/initiatives/
 - https://fosspost.org/lists/open-source-speech-recognition-speech-to-text
 - https://mycroft-ai.gitbook.io/docs/about-mycroft-ai/faq#can-mycroft-run-completely-offline-can-i-self-host-everything
+- https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/customizations/stt-engine
 - Someone already working on the backend (but no link yet): https://github.com/MycroftAI/selene-backend/issues/203
 
 - Alternative? http://deeppavlov.ai/

@@ -5,6 +5,39 @@ export BIN_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 export MYCROFT_STORAGE_DIR=$(readlink -f ${BIN_DIR}/../storage)
 export MYCROFT_CREDENTIALS_DIR=$(readlink -f ${BIN_DIR}/../selene-backend/generated)
 
+# praseconf() parses the yaml configuration in mycroft.yaml and sets
+# up any needed environment variables.
+parseconf() {
+  if [ ! -f ${BIN_DIR}/../mycroft.yaml ]; then
+    log_error "No mycroft.yaml file found. Start by copying mycroft.yaml.sample and edit it accordingly."
+    exit 1;
+  fi
+
+  export SSO_BASE_URL=$(yq r mycroft.yaml sso_base_url)
+  if [ -z "$SSO_BASE_URL" ]; then
+    log_error "sso_base_url not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
+  export OAUTH_BASE_URL=$(yq r mycroft.yaml oauth_base_url)
+  if [ -z "$OAUTH_BASE_URL" ]; then
+    log_error "oauth_base_url not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
+  export GITHUB_USER=$(yq r mycroft.yaml github_user)
+  if [ -z "$GITHUB_USER" ]; then
+    log_error "github_user not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
+  export GITHUB_PASSWORD=$(yq r mycroft.yaml github_password)
+  if [ -z "$GITHUB_PASSWORD" ]; then
+    log_error "github_password not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+}
+
 log() {
   date=$(date +"%Y-%m-%d %H:%M:%S")
 

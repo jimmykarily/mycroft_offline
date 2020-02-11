@@ -1,0 +1,4 @@
+sso_base_url: "test"
+oauth_base_url: ""
+github_user: ""
+github_password: ""
