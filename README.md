@@ -19,20 +19,10 @@ The project that is closer to the desired result is Mycroft (https://mycroft.ai/
 
 ## Build needed images
 
-Build the front-end application images:
+Build all the needed images for front-end and back-end:
 
 ```
-$ pushd selene-ui
-$ for app in account sso market; do docker build --build-arg application_name=${app} -t selene-ui-${app} . ; done
-$ popd
-```
-
-build the selene-backend image:
-
-```
-$ pushd selene-backend
-$ docker build -t selene-backend .
-$ popd
+$ make images
 ```
 
 ## Deploy
@@ -42,13 +32,13 @@ Start by copying `mycroft.yaml.sample` to `mycroft.yaml`. Then edit the values a
 Then run:
 
 ```
-$ make backend
+$ make
 ```
 
 To cleanup run:
 
 ```
-$ make clean-backend
+$ make clean
 ```
 
 ## Note
