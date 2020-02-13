@@ -1,9 +1,14 @@
 #!/bin/bash
+
+set -e
+
 CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 source ${CURRENT_DIR}/helpers
+parseconf
 
 pushd ${CURRENT_DIR}/../selene-ui
-for app in account sso market; do docker build --build-arg application_name=${app} -t selene-ui-${app} . ; done
+docker build --build-arg mycroft_domain=${MYCROFT_DOMAIN} -f nginxproxy-Dockerfile -t mycroft-nginx-proxy .
+for app in account sso market; do docker build --build-arg application_name=${app} --build-arg mycroft_domain=${MYCROFT_DOMAIN} -t selene-ui-${app} . ; done
 
 pushd ${CURRENT_DIR}/../selene-backend
 docker build -t selene-backend .

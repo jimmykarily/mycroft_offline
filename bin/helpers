@@ -13,6 +13,12 @@ parseconf() {
     exit 1;
   fi
 
+  export MYCROFT_DOMAIN=$(yq r mycroft.yaml mycroft_domain)
+  if [ -z "$MYCROFT_DOMAIN" ]; then
+    log_error "mycroft_domain not set! Check your mycroft.yaml file.";
+    exit 1;
+  fi
+
   export SSO_BASE_URL=$(yq r mycroft.yaml sso_base_url)
   if [ -z "$SSO_BASE_URL" ]; then
     log_error "sso_base_url not set! Check your mycroft.yaml file.";

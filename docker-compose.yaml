@@ -47,7 +47,7 @@ services:
       - bash
       - -c
       - "if [ ! -f /shared/db_bootstrap_done ]; then echo 'Database bootstraping not done. Exiting.'; exit 1; fi;
-         cd /opt/selene/selene-backend/api/sso && /usr/local/bin/pipenv run uwsgi -b 32768 --ini uwsgi.ini
+         cd /opt/selene/selene-backend/api/sso && /usr/local/bin/pipenv run uwsgi -b 32768 --http 0.0.0.0:4000 --ini uwsgi.ini
         "
     environment:
       DB_HOST: db
@@ -206,29 +206,34 @@ services:
   selene-ui-market:
     image: selene-ui-market
     restart: "on-failure"
-    links:
-      - market
-      - sso
-      - account
-      - devices
-    depends_on:
-      - market
-      - sso
-      - account
-      - devices
   selene-ui-account:
     image: selene-ui-account
+    restart: "on-failure"
+  selene-ui-sso:
+    image: selene-ui-sso
+    restart: "on-failure"
+  # This is and nginx reverse proxy that redirects all subdomains and api
+  # endpoints to the correct container.
+  selene-ui-proxy:
+    image: mycroft-nginx-proxy
     restart: "on-failure"
     links:
       - market
       - sso
       - account
       - devices
+      - selene-ui-market
+      - selene-ui-sso
     depends_on:
       - market
       - sso
       - account
       - devices
+      - selene-ui-market
+      - selene-ui-sso
+    ports:
+      - "80:80"
+      - "443:443"
 volumes:
   generated:
     driver: local
