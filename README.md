@@ -64,7 +64,4 @@ Idea: Create a mycroft skill to deploy apps with CF (cf cli wrapper)
 - https://fosspost.org/lists/open-source-speech-recognition-speech-to-text
 - https://mycroft-ai.gitbook.io/docs/about-mycroft-ai/faq#can-mycroft-run-completely-offline-can-i-self-host-everything
 - https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/customizations/stt-engine
-- Someone already working on the backend (but no link yet): https://github.com/MycroftAI/selene-backend/issues/203
-
-- Alternative? http://deeppavlov.ai/
-
+- https://github.com/MycroftAI/selene-backend/issues/203
