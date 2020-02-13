@@ -45,7 +45,7 @@ services:
       - bash
       - -c
       - "if [ ! -f /shared/db_bootstrap_done ]; then echo 'Database bootstraping not done. Exiting.'; exit 1; fi;
-         cd /opt/selene/selene-backend/api/sso && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+         cd /opt/selene/selene-backend/api/sso && /usr/local/bin/pipenv run uwsgi -b 32768 --ini uwsgi.ini
         "
     environment:
       DB_HOST: db
@@ -74,7 +74,7 @@ services:
       - bash
       - -c
       - "if [ ! -f /shared/db_bootstrap_done ]; then echo 'Database bootstraping not done. Exiting.'; exit 1; fi;
-         cd /opt/selene/selene-backend/api/account && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+         cd /opt/selene/selene-backend/api/account && /usr/local/bin/pipenv run uwsgi -b 32768 --ini uwsgi.ini
         "
     environment:
       DB_HOST: db
@@ -112,7 +112,7 @@ services:
       DB_USER: selene
       GITHUB_USER: "${GITHUB_USER}"
       GITHUB_PASSWORD: "${GITHUB_PASSWORD}"
-  markeplace:
+  market:
     image: selene-backend
     restart: "on-failure"
     volumes:
@@ -124,7 +124,7 @@ services:
       - bash
       - -c
       - "if [ ! -f /shared/skills_setup_done ]; then echo 'Skills downloading and setup not done. Exiting.'; exit 1; fi;
-         cd /opt/selene/selene-backend/api/market && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+         cd /opt/selene/selene-backend/api/market && /usr/local/bin/pipenv run uwsgi -b 32768 --ini uwsgi.ini
         "
     environment:
       DB_HOST: db
@@ -151,7 +151,7 @@ services:
       - bash
       - -c
       - "if [ ! -f /shared/skills_setup_done ]; then echo 'Skills downloading and setup not done. Exiting.'; exit 1; fi;
-         cd /opt/selene/selene-backend/api/public && /usr/local/bin/pipenv run uwsgi --ini uwsgi.ini
+         cd /opt/selene/selene-backend/api/public && /usr/local/bin/pipenv run uwsgi -b 32768 --ini uwsgi.ini
         "
     environment:
       DB_HOST: db
@@ -195,6 +195,32 @@ services:
       - "8181:8181"
     devices:
       - "/dev/snd:/dev/snd"
+  selene-ui-market:
+    image: selene-ui-market
+    restart: "on-failure"
+    links:
+      - market
+      - sso
+      - account
+      - devices
+    depends_on:
+      - market
+      - sso
+      - account
+      - devices
+  selene-ui-account:
+    image: selene-ui-account
+    restart: "on-failure"
+    links:
+      - market
+      - sso
+      - account
+      - devices
+    depends_on:
+      - market
+      - sso
+      - account
+      - devices
 volumes:
   generated:
     driver: local

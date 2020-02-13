@@ -6,9 +6,9 @@ source ${CURRENT_DIR}/helpers
 pushd ${CURRENT_DIR}/../selene-backend
 docker-compose stop
 docker-compose rm -v -f
-docker volume rm -f \
-  selene-backend_generated \
-  selene-backend_shared \
-  selene-backend_mycroft_storage_dir \
-  selene-backend_pulse_cookie \
-  selene-backend_pulse_native
+#docker volume rm -f \
+#  selene-backend_generated \
+#  selene-backend_shared \
+#  selene-backend_mycroft_storage_dir \
+#  selene-backend_pulse_config \
+#  selene-backend_pulse_runtime

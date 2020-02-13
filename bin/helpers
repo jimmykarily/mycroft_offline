@@ -3,7 +3,7 @@
 # Setting and constant definitions
 export BIN_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
 export MYCROFT_STORAGE_DIR=$(readlink -f ${BIN_DIR}/../storage)
-export MYCROFT_CREDENTIALS_DIR=$(readlink -f ${BIN_DIR}/../selene-backend/generated)
+export MYCROFT_CREDENTIALS_DIR=$(readlink -f ${BIN_DIR}/../generated)
 
 # praseconf() parses the yaml configuration in mycroft.yaml and sets
 # up any needed environment variables.

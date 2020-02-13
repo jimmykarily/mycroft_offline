@@ -1,0 +1,9 @@
+#!/bin/bash
+CURRENT_DIR=$(cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )
+source ${CURRENT_DIR}/helpers
+
+pushd ${CURRENT_DIR}/../selene-ui
+for app in account sso market; do docker build --build-arg application_name=${app} -t selene-ui-${app} . ; done
+
+pushd ${CURRENT_DIR}/../selene-backend
+docker build -t selene-backend .

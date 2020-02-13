@@ -1,18 +1,23 @@
-.PHONY: backend
-backend: generate-credentials run-backend
+.PHONY: all
+all: generate-credentials run-services
 
 .PHONY: generate-credentials
 generate-credentials:
 	bin/generate-credentials
 
+# Deprecate this
 .PHONY: run-front
 run-frontend:
 	bin/run-frontend
 
-.PHONY: run-backend
-run-backend:
-	bin/run-backend
+.PHONY: run-services
+run-services:
+	bin/run-services
 
-.PHONY: clean-backend
-clean-backend:
-	bin/clean-backend
+.PHONY: clean
+clean:
+	bin/clean
+
+.PHONY: images
+images:
+	bin/images

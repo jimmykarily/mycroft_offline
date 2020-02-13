@@ -17,11 +17,39 @@ The project that is closer to the desired result is Mycroft (https://mycroft.ai/
 - docker-compose: https://docs.docker.com/compose/
 - Internet connection to download docker images and dependencies
 
+## Build needed images
+
+Build the front-end application images:
+
+```
+$ pushd selene-ui
+$ for app in account sso market; do docker build --build-arg application_name=${app} -t selene-ui-${app} . ; done
+$ popd
+```
+
+build the selene-backend image:
+
+```
+$ pushd selene-backend
+$ docker build -t selene-backend .
+$ popd
+```
+
 ## Deploy
 
-### Settings
+Start by copying `mycroft.yaml.sample` to `mycroft.yaml`. Then edit the values as needed.
 
-You will find some variables defined in `bin/helpers`, like the storage directory to use.
+Then run:
+
+```
+$ make backend
+```
+
+To cleanup run:
+
+```
+$ make clean-backend
+```
 
 ## Note
 
