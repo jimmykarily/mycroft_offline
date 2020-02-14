@@ -12,3 +12,6 @@ for app in account sso market; do docker build --build-arg application_name=${ap
 
 pushd ${CURRENT_DIR}/../selene-backend
 docker build -t selene-backend .
+
+pushd ${CURRENT_DIR}/../deepspeech
+docker build -t deepspeech .

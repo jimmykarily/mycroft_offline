@@ -55,3 +55,8 @@ Idea: Create a mycroft skill to deploy apps with CF (cf cli wrapper)
 - https://mycroft-ai.gitbook.io/docs/about-mycroft-ai/faq#can-mycroft-run-completely-offline-can-i-self-host-everything
 - https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/customizations/stt-engine
 - https://github.com/MycroftAI/selene-backend/issues/203
+
+## TODO
+
+- Add precise container for wake word and make sure it's used by mycroft (check `mycroft-conf get`):
+  https://mycroft-ai.gitbook.io/docs/using-mycroft-ai/troubleshooting/wake-word-troubleshooting#precise
